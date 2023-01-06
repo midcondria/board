@@ -9,15 +9,18 @@ import my.board.domain.user.UserRepository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 public class LoginCheckInterceptor implements HandlerInterceptor {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String AUTHORIZATION = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
 
@@ -28,8 +31,10 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         log.info("검증 시작");
-        log.info("header = " +request.getHeader(""));
-        String token = request.getHeader(AUTHORIZATION_HEADER);
+        log.info("header = " +request.getHeader("Cookie"));
+
+        String token = getToken(request, AUTHORIZATION);
+
         log.info("token before: "+ token);
         if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
             token = token.substring(7);
@@ -47,9 +52,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             } else {
                 throw new IllegalArgumentException("Token Error");
             }
-
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+            userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
             log.info("토큰 검증 성공");
@@ -57,6 +61,26 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         }
         log.info("토큰 검증 실패");
         return false;
+    }
+
+    public String getToken(HttpServletRequest request, String cookieName) {
+
+        String cookieHeader = request.getHeader("Cookie");
+        if (cookieHeader != null) {
+            List<String> cookieStrings = Arrays.asList(cookieHeader.split(";"));
+            for (String cookieString : cookieStrings) {
+                String[] parts = cookieString.split("=");
+
+                String name = parts[0].trim();
+                String value = parts[1].trim();
+                log.info("name={}",name);
+                log.info("value={}",value);
+                if (name.equals(cookieName)) {
+                    return value;
+                }
+            }
+        }
+        return null;
     }
 }
 //
