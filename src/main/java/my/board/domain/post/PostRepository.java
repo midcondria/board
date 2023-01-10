@@ -1,6 +1,7 @@
 package my.board.domain.post;
 
 import my.board.domain.entity.Post;
+import my.board.dto.PostUpdateDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findById(Long id);
 
     Post save(Post post);
+
+    void deleteById(Long id);
 }

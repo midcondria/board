@@ -15,16 +15,18 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("signup")
+    @GetMapping("/signup")
     public String signupPage() {
         log.info("Get UserController");
         return "users/signup";
     }
 
-    @PostMapping("signup")
-    public String signup(SignupDto signupDto) {
+    @PostMapping("/signup")
+    @ResponseBody
+    public String signup(@RequestBody SignupDto signupDto) {
         log.info("form: "+signupDto.getUsername());
         userService.signup(signupDto);
-        return "redirect:/login";
+        return "success";
+//        return "redirect:/users/login";
     }
 }

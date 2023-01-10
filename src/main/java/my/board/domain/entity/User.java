@@ -8,13 +8,15 @@ import javax.persistence.Entity;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity(name = "users")
 public class User extends Timestamped{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
@@ -32,6 +34,9 @@ public class User extends Timestamped{
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
+
+//    @OneToMany
+//    private List<Post> postList = new ArrayList<>();
 
     public User() {
     }

@@ -3,18 +3,16 @@ package my.board.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
-public class PostSaveDto {
+public class PostUpdateDto {
 
-    @NotBlank
+    @NotNull
     private String author;
 
     @NotBlank
     private String title;
 
     private String content;
-
-    private Long id;
-
 }

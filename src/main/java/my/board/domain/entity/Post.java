@@ -2,20 +2,20 @@ package my.board.domain.entity;
 
 import lombok.Getter;
 import my.board.dto.PostSaveDto;
+import my.board.dto.PostUpdateDto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Entity
 public class Post extends Timestamped {
 
     @Id @GeneratedValue
+    @Column(name = "post_id")
     private Long id;
 
-    @Column(nullable = false,name = "username")
+    @Column(nullable = false)
     private String author;
 
     @Column(nullable = false)
@@ -23,18 +23,35 @@ public class Post extends Timestamped {
 
     private String content;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "post",orphanRemoval = true)
+    private List<Comment> commentList;
+
+
     public Post() {
     }
 
-    public Post(PostSaveDto form) {
+    public Post(PostSaveDto form,User user) {
         this.author = form.getAuthor();
         this.title = form.getTitle();
         this.content = form.getContent();
+        this.user = user;
     }
 
-    public Post(String author, String title, String content) {
+    public Post(String author, String title, String content,User user) {
         this.author = author;
         this.title = title;
         this.content = content;
+        this.user = user;
+    }
+
+    public void update(PostUpdateDto postUpdateDto) {
+        this.author = postUpdateDto.getAuthor();
+        this.title = postUpdateDto.getTitle();
+        this.content = postUpdateDto.getContent();
     }
 }

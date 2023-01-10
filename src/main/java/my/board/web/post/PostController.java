@@ -3,8 +3,11 @@ package my.board.web.post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import my.board.domain.entity.Post;
+import my.board.domain.entity.User;
 import my.board.domain.post.PostRepository;
+import my.board.domain.post.PostService;
 import my.board.dto.PostSaveDto;
+import my.board.dto.PostUpdateDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +26,7 @@ import java.util.Optional;
 public class PostController {
 
     private final PostRepository postRepository;
+    private final PostService postService;
 
     @GetMapping
     public String postList(Model model) {
@@ -34,9 +38,9 @@ public class PostController {
     @GetMapping("{postId}")
     public String post(@PathVariable Long postId, Model model) {
         Post post = postRepository.findById(postId).orElseThrow(
-                ()-> new IllegalArgumentException("잘못된 요청입니다.")
+                () -> new IllegalArgumentException("잘못된 요청입니다.")
         );
-        model.addAttribute("post",post);
+        model.addAttribute("post", post);
         return "posts/post";
     }
 
@@ -56,9 +60,36 @@ public class PostController {
         }
 
         //성공 로직
-        Post savedPost = postRepository.save(new Post(postSaveDto));
+        User user = new User();
+        Post savedPost = postRepository.save(new Post(postSaveDto, user));
         redirectAttributes.addAttribute("postId", savedPost.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/posts/{postId}";
+    }
+
+    @GetMapping("/{postId}/edit")
+    public String editForm(@PathVariable Long postId, Model model) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("잘못된 요청입니다.")
+        );
+        model.addAttribute("post", post);
+        return "posts/editForm";
+    }
+
+    @PostMapping("/{postId}/edit")
+    public String edit(@PathVariable Long postId, @Validated @ModelAttribute("post") PostUpdateDto postUpdateDto, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            log.info("errors={}", bindingResult);
+            return "posts/editForm";
+        }
+        postService.updatePost(postId, postUpdateDto);
+        return "redirect:/posts/{postId}";
+    }
+
+    @DeleteMapping("/{postId}")
+    public String delete(@PathVariable Long postId) {
+        postService.delete(postId);
+        return "posts/posts";
     }
 }
