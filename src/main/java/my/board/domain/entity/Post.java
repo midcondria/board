@@ -5,6 +5,7 @@ import my.board.dto.PostSaveDto;
 import my.board.dto.PostUpdateDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,8 +29,11 @@ public class Post extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "post",orphanRemoval = true)
-    private List<Comment> commentList;
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
+    @OneToMany
+    private List<Like> likes = new ArrayList<>();
 
 
     public Post() {

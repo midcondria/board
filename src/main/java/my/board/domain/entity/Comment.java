@@ -5,6 +5,8 @@ import lombok.Getter;
 import my.board.dto.CommentSaveDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,6 +31,15 @@ public class Comment extends Timestamped{
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @OneToMany
+    private List<Like> likes = new ArrayList<>();
+
+
+    public void setPost(Post post) {
+        this.post = post;
+        post.getCommentList().add(this);
+    }
+
     public Comment() {
     }
 
@@ -44,5 +55,6 @@ public class Comment extends Timestamped{
         this.text = commentSaveDto.getText();
         this.user = user;
         this.post = post;
+        this.setPost(post);
     }
 }

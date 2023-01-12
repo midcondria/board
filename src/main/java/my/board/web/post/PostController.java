@@ -1,11 +1,16 @@
 package my.board.web.post;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import my.board.domain.comment.CommentService;
 import my.board.domain.entity.Post;
 import my.board.domain.entity.User;
 import my.board.domain.post.PostRepository;
 import my.board.domain.post.PostService;
+import my.board.dto.CommentResponseDto;
+import my.board.dto.PostResponseDto;
 import my.board.dto.PostSaveDto;
 import my.board.dto.PostUpdateDto;
 import org.springframework.stereotype.Controller;
@@ -16,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Controller
@@ -27,21 +31,45 @@ public class PostController {
 
     private final PostRepository postRepository;
     private final PostService postService;
+    private final CommentService commentService;
 
+    @ResponseBody
     @GetMapping
-    public String postList(Model model) {
-        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
-        model.addAttribute("posts", posts);
-        return "posts/posts";
+    public Result postList() {
+        List<PostResponseDto> postList = postService.findPosts();
+
+        return new Result(postList);
     }
 
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T postList;
+    }
+
+
+//    @GetMapping
+//    public String postList(Model model) {
+//        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
+//        model.addAttribute("posts", posts);
+//        return "posts/posts";
+//    }
+//
+//
+
+    @ResponseBody
     @GetMapping("{postId}")
-    public String post(@PathVariable Long postId, Model model) {
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new IllegalArgumentException("잘못된 요청입니다.")
-        );
-        model.addAttribute("post", post);
-        return "posts/post";
+    public PostPage post(@PathVariable Long postId) {
+        Post post = postService.findPost(postId);
+
+        return new PostPage(new PostResponseDto(post));
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class PostPage<T1> {
+        private T1 post;
+
     }
 
     @GetMapping("/add")
@@ -52,7 +80,8 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public String addPost(@Validated @ModelAttribute("post") PostSaveDto postSaveDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String addPost(@Validated @ModelAttribute("post") PostSaveDto postSaveDto,
+                          BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
@@ -77,7 +106,9 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/edit")
-    public String edit(@PathVariable Long postId, @Validated @ModelAttribute("post") PostUpdateDto postUpdateDto, BindingResult bindingResult) {
+    public String edit(@PathVariable Long postId,
+                       @Validated @ModelAttribute("post") PostUpdateDto postUpdateDto,
+                       BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);

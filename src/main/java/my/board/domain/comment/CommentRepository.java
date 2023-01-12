@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment,Long> {
-
-    List<Comment> findAllByIdOrderByCreatedAtAsc(Long postId);
     Comment save(Comment comment);
 
     void deleteById(Long id);
