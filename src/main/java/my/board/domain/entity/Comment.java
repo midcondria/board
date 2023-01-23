@@ -31,8 +31,7 @@ public class Comment extends Timestamped{
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToMany
-    private List<Like> likes = new ArrayList<>();
+    private Integer totalLikes;
 
 
     public void setPost(Post post) {
@@ -56,5 +55,13 @@ public class Comment extends Timestamped{
         this.user = user;
         this.post = post;
         this.setPost(post);
+    }
+
+    public void plusLike() {
+        this.totalLikes = totalLikes +1;
+    }
+
+    public void minusLike() {
+        this.totalLikes = totalLikes -1;
     }
 }

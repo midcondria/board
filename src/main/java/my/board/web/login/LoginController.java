@@ -23,17 +23,15 @@ public class LoginController {
 //        return new ModelAndView("login");
 //    }
     
-    @ResponseBody
     @GetMapping("/login")
     public String loginPage() {
-        return "loginPage";
+        return "login";
     }
 
-    @ResponseBody
     @PostMapping("/login")
     public String login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
         loginService.login(loginDto, response);
-        return "success";
+        return "/posts/posts";
     }
 
 }

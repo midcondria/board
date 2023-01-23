@@ -1,6 +1,7 @@
 package my.board.domain.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import my.board.dto.PostSaveDto;
 import my.board.dto.PostUpdateDto;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class Post extends Timestamped {
 
     @Id @GeneratedValue
@@ -24,7 +26,6 @@ public class Post extends Timestamped {
 
     private String content;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -32,12 +33,7 @@ public class Post extends Timestamped {
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany
-    private List<Like> likes = new ArrayList<>();
-
-
-    public Post() {
-    }
+    private Integer totalLikes;
 
     public Post(PostSaveDto form,User user) {
         this.author = form.getAuthor();
@@ -58,4 +54,13 @@ public class Post extends Timestamped {
         this.title = postUpdateDto.getTitle();
         this.content = postUpdateDto.getContent();
     }
+
+    public void plusLike() {
+        this.totalLikes = totalLikes +1;
+    }
+
+    public void minusLike() {
+            this.totalLikes = totalLikes;
+    }
+
 }

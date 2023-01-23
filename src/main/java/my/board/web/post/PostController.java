@@ -9,7 +9,6 @@ import my.board.domain.entity.Post;
 import my.board.domain.entity.User;
 import my.board.domain.post.PostRepository;
 import my.board.domain.post.PostService;
-import my.board.dto.CommentResponseDto;
 import my.board.dto.PostResponseDto;
 import my.board.dto.PostSaveDto;
 import my.board.dto.PostUpdateDto;
@@ -33,29 +32,29 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
 
-    @ResponseBody
-    @GetMapping
-    public Result postList() {
-        List<PostResponseDto> postList = postService.findPosts();
-
-        return new Result(postList);
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class Result<T> {
-        private T postList;
-    }
-
-
+//    @ResponseBody
 //    @GetMapping
-//    public String postList(Model model) {
-//        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
-//        model.addAttribute("posts", posts);
-//        return "posts/posts";
+//    public Result postList() {
+//        List<PostResponseDto> postList = postService.findPosts();
+//
+//        return new Result(postList);
 //    }
 //
-//
+//    @Data
+//    @AllArgsConstructor
+//    static class Result<T> {
+//        private T postList;
+//    }
+
+
+    @GetMapping
+    public String postList(Model model) {
+        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
+        model.addAttribute("posts", posts);
+        return "posts/posts";
+    }
+
+
 
     @ResponseBody
     @GetMapping("{postId}")
@@ -105,7 +104,7 @@ public class PostController {
         return "posts/editForm";
     }
 
-    @PostMapping("/{postId}/edit")
+    @PatchMapping("/{postId}/edit")
     public String edit(@PathVariable Long postId,
                        @Validated @ModelAttribute("post") PostUpdateDto postUpdateDto,
                        BindingResult bindingResult) {
