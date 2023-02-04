@@ -36,7 +36,7 @@ public class TestDataInit implements ApplicationRunner {
         userRepository.save(user2);
         Post post1 = postRepository.save(new Post("글쓴이1", "제목1", "내용1", user1));
         Post post2 = postRepository.save(new Post("글쓴이2", "제목2", "내용2", user2));
-        commentRepository.save(new Comment("1233", "123", user1, post1));
+        commentRepository.save(new Comment("123", "123", user1, post1));
         commentRepository.save(new Comment("1233", "123", user1, post2));
     }
 }
