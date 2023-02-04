@@ -63,7 +63,7 @@ jobs:
       run:
         aws deploy create-deployment 
         --application-name midcondria
-        --deployment-group-name my-group
+        --deployment-group-name cicdprac
         --file-exists-behavior OVERWRITE 
         --s3-location bucket=midconcicd,bundleType=zip,key=myapplication.zip
         --region ap-northeast-2
