@@ -62,7 +62,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run:
         aws deploy create-deployment 
-        --application-name myapplication
+        --application-name midcondria
         --deployment-group-name my-group
         --file-exists-behavior OVERWRITE 
         --s3-location bucket=midconcicd,bundleType=zip,key=myapplication.zip
