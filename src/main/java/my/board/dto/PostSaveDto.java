@@ -17,4 +17,12 @@ public class PostSaveDto {
 
     private Long id;
 
+    private int amount;
+
+    public PostSaveDto(String author, Long id, int amount) {
+        this.author = author;
+        this.title = "123";
+        this.id = id;
+        this.amount = amount;
+    }
 }

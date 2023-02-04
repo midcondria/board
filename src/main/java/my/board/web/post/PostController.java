@@ -9,9 +9,11 @@ import my.board.domain.entity.Post;
 import my.board.domain.entity.User;
 import my.board.domain.post.PostRepository;
 import my.board.domain.post.PostService;
+import my.board.dto.MenuRequestDto;
 import my.board.dto.PostResponseDto;
 import my.board.dto.PostSaveDto;
 import my.board.dto.PostUpdateDto;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,7 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 
-@Controller
+@RestController
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/posts")
@@ -47,6 +49,27 @@ public class PostController {
 //    }
 
 
+    @PostMapping(value = "/json", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String getJson(@RequestBody MenuRequestDto menuList) {
+        menuList.getMenuList().forEach(
+                m -> {
+                    log.info("id = " + m.getId());
+                    log.info("Name = " + m.getMenuName());
+                    log.info("amount = "+ m.getAmount());
+                }
+        );
+        log.info("lastName = "+ menuList.getName());
+        log.info("size = " + menuList.getMenuList().size());
+
+        User user = new User();
+        menuList.getMenuList().forEach(
+                m -> {
+                    Post savedPost = postRepository.save(new Post(new PostSaveDto(m.getMenuName(),m.getId(),m.getAmount()), user));
+                }
+        );
+        return "done";
+    }
+
     @GetMapping
     public String postList(Model model) {
         List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
@@ -54,10 +77,8 @@ public class PostController {
         return "posts/posts";
     }
 
-
-
     @ResponseBody
-    @GetMapping("{postId}")
+    @GetMapping("/{postId}")
     public PostPage post(@PathVariable Long postId) {
         Post post = postService.findPost(postId);
 

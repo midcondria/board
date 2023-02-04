@@ -39,7 +39,7 @@ public class Post extends Timestamped {
         this.author = form.getAuthor();
         this.title = form.getTitle();
         this.content = form.getContent();
-        this.user = user;
+//        this.user = user;
     }
 
     public Post(String author, String title, String content,User user) {
