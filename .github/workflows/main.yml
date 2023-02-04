@@ -65,5 +65,5 @@ jobs:
         --application-name myapplication
         --deployment-group-name my-group
         --file-exists-behavior OVERWRITE 
-        --s3-location bucket=mybucket,bundleType=zip,key=myapplication.zip
+        --s3-location bucket=midconcicd,bundleType=zip,key=myapplication.zip
         --region ap-northeast-2
