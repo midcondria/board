@@ -22,6 +22,8 @@ echo "> Start health check of WAS at 'http://127.0.0.1:${TARGET_PORT}' ..."
 # 아래 커맨드들을 새로 열린 서버가 정상적으로 작동하는지 확인
 
 # 해당 커맨드들을 10번씩 반복
+# 배포할 서버를 10번 테스트 해서 통과하면 넘어가짐 health_check는 응답을 보고 정상 응답인지 비정상 응답인지 확인한다는 의미?
+# 안전장치로 10번 테스트
 for RETRY_COUNT in 1 2 3 4 5 6 7 8 9 10
 do
     echo "> #${RETRY_COUNT} trying..."

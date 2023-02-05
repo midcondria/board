@@ -48,6 +48,7 @@ public class WebSecurityConfig {
         http.authorizeRequests().antMatchers("/users/**").permitAll()
                 .antMatchers("/api/search").permitAll()
                 .antMatchers("/api/shop").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 // JWT 인증/인가를 사용하기 위한 설정
