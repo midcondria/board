@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 
-@Controller
+@RestController
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/users")
